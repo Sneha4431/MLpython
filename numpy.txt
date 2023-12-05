@@ -1,0 +1,32 @@
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional, Union
+
+from datasets import load_dataset, load_metric
+import numpy as np
+import torch
+import torchaudio
+
+import transformers
+from transformers import (
+    HfArgumentParser,
+    TrainingArguments,
+    EvalPrediction,
+    AutoConfig,
+    Wav2Vec2Processor,
+    Wav2Vec2FeatureExtractor,
+    is_apex_available,
+    set_seed,
+)
+from transformers.trainer_utils import get_last_checkpoint, is_main_process
+
+from src.models import Wav2Vec2ForSpeechClassification, HubertForSpeechClassification
+from src.collator import DataCollatorCTCWithPadding
+from src.trainer import CTCTrainer
+
+logger = logging.getLogger(__name__)
+MODEL_MODES = ["wav2vec", "hubert"]
+POOLING_MODES = ["mean", "sum", "max"]
+DELIMITERS = {"tab": "\t", "comma": ",", "pipe": "|"}
+
+
+@dataclass

@@ -1,0 +1,80 @@
+@dataclass
+class DataTrainingArguments:
+    """
+    Arguments pertaining to what data we are going to input our model for training and eval.
+
+    Using `HfArgumentParser` we can turn this class
+    into argparse arguments to be able to specify them on
+    the command line.
+    """
+    train_file: Optional[str] = field(
+        default=None, metadata={"help": "The input training data file (a csv or JSON file)."}
+    )
+    validation_file: Optional[str] = field(
+        default=None,
+        metadata={"help": "An optional input evaluation data file to evaluate on (a csv or JSON file)."},
+    )
+    test_file: Optional[str] = field(
+        default=None,
+        metadata={"help": "An optional input evaluation data file to test on (a csv or JSON file)."},
+    )
+    input_column: Optional[str] = field(
+        default="path",
+        metadata={"help": "The name of the column in the datasets containing the audio path."},
+    )
+    target_column: Optional[str] = field(
+        default="emotion",
+        metadata={"help": "The name of the column in the datasets containing the labels."},
+    )
+    delimiter: Optional[str] = field(
+        default="tab",
+        metadata={
+            "help": "Specifies the character delimiting individual cells in the CSV data and must be from the following: " + ", ".join(
+                DELIMITERS.keys())
+        },
+    )
+    overwrite_cache: bool = field(
+        default=False, metadata={"help": "Overwrite the cached preprocessed datasets or not."}
+    )
+    preprocessing_num_workers: Optional[int] = field(
+        default=None,
+        metadata={"help": "The number of processes to use for the preprocessing."},
+    )
+    max_train_samples: Optional[int] = field(
+        default=None,
+        metadata={
+            "help": "For debugging purposes or quicker training, truncate the number of training examples to this "
+                    "value if set."
+        },
+    )
+    max_eval_samples: Optional[int] = field(
+        default=None,
+        metadata={
+            "help": "For debugging purposes or quicker training, truncate the number of validation examples to this "
+                    "value if set."
+        },
+    )
+    max_predict_samples: Optional[int] = field(
+        default=None,
+        metadata={
+            "help": "For debugging purposes or quicker training, truncate the number of prediction examples to this "
+                    "value if set."
+        },
+    )
+    min_duration_in_seconds: Optional[float] = field(
+        default=None,
+        metadata={"help": "Filters out examples less than specified. Defaults to no filtering."},
+    )
+    max_duration_in_seconds: Optional[float] = field(
+        default=None,
+        metadata={"help": "Filters out examples longer than specified. Defaults to no filtering."},
+    )
+
+    def __post_init__(self):
+        if self.train_file is None and self.validation_file is None:
+            raise ValueError("Need either a dataset name or a training/validation file.")
+        else:
+            extension = self.train_file.split(".")[-1]
+            assert extension in ["csv", "json"], "`train_file` should be a csv or a json file."
+            extension = self.validation_file.split(".")[-1]
+            assert extension in ["csv", "json"], "`validation_file` should be a csv or a json file."

@@ -1,0 +1,45 @@
+class ModelArguments:
+    """
+    Arguments pertaining to which model/config/tokenizer we are going to fine-tune from.
+    """
+
+    model_name_or_path: str = field(
+        metadata={"help": "Path to pretrained model or model identifier from huggingface.co/models"}
+    )
+    model_mode: str = field(
+        default="wav2vec",
+        metadata={
+            "help": "Specifies the base model and must be from the following: " + ", ".join(MODEL_MODES)
+        },
+    )
+    pooling_mode: str = field(
+        default="mean",
+        metadata={
+            "help": "Specifies the reduction to apply to the output of Wav2Vec2 model and must be from the following: " + ", ".join(
+                POOLING_MODES)
+        },
+    )
+    config_name: Optional[str] = field(
+        default=None, metadata={"help": "Pretrained config name or path if not the same as model_name"}
+    )
+    feature_extractor_name: Optional[str] = field(
+        default=None, metadata={"help": "Pretrained feature_extractor name or path if not the same as model_name"}
+    )
+    cache_dir: Optional[str] = field(
+        default=None,
+        metadata={"help": "Where do you want to store the pretrained models downloaded from huggingface.co"},
+    )
+    freeze_feature_extractor: Optional[bool] = field(
+        default=True, metadata={"help": "Whether to freeze the feature extractor layers of the model."}
+    )
+    model_revision: str = field(
+        default="main",
+        metadata={"help": "The specific model version to use (can be a branch name, tag name or commit id)."},
+    )
+    use_auth_token: bool = field(
+        default=False,
+        metadata={
+            "help": "Will use the token generated when running `transformers-cli login` (necessary to use this script "
+                    "with private models)."
+        },
+    )
